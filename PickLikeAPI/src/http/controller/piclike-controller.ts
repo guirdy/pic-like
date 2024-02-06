@@ -4,7 +4,7 @@ import { makeGetLikeServices } from "src/services/factories/makeGetPickLikeServi
 const pickLikeServices = makeGetLikeServices();
 
 export async function getUser(req: Request, res: Response) {
-  const userId = req.params.id;
+  const userId = req.params.userId;
 
   const { user } = await pickLikeServices.getUser({ userId: Number(userId) });
 
@@ -23,7 +23,7 @@ export async function getLikes(req: Request, res: Response) {
 }
 
 export async function getLikeById(req: Request, res: Response) {
-  const likeId = req.params.id;
+  const likeId = req.params.likeId;
 
   const like = await pickLikeServices.getLikeById(parseInt(likeId));
 
@@ -59,7 +59,5 @@ export async function removeLike(req: Request, res: Response) {
     return res.status(400);
   }
 
-  return res.status(200).send({
-    like
-  })
+  return res.status(200).send(like)
 }
