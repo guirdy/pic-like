@@ -3,5 +3,6 @@ import { User } from "src/models/user";
 
 export interface IUserRepository {
   getUser(id: number): Promise<User | undefined>
-  addLikedImage(userId: number, likedImage: Like): Promise<Like | undefined>
+  addLikedImage(userId: number, likedImageId: number): Promise<Like | undefined>
+  removeLikedImage(userId: number, likedImageId: number): Promise<Like[] | undefined>
 }

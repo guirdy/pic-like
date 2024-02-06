@@ -10,21 +10,60 @@ export class LikeRepository implements ILikeRepository {
     })
   }
 
-  async addLike(likedImage: Like): Promise<Like | undefined> {
+  async getLikedImageById(likedImageId: number): Promise<Like | undefined> {
     return new Promise((resolve, reject) => {
-      if (!likedImage) {
-        return reject('Invalid liked image.')
+      if (!likedImageId) {
+        return reject(new Error('Invalid image id.'))
       }
 
-      const likedImageIndex = this.likes.findIndex(like => like.id === likedImage.id)
+      return resolve(this.likes.find(like => like.id === likedImageId));
+    })
+  }
+
+  async addLike(likedImageId: number): Promise<Like | undefined> {
+    return new Promise((resolve, reject) => {
+      if (!likedImageId) {
+        return reject('Invalid liked image id.');
+      }
+
+      const likedImageIndex = this.likes.findIndex(like => like.id === likedImageId)
 
       if (likedImageIndex === -1) {
-        this.likes.push(likedImage)
+        const newLikedImage = new Like(likedImageId)
+
+        this.likes.push(newLikedImage);
       } else {
-        this.likes[likedImageIndex].qtt += 1
+        this.likes[likedImageIndex].qtt += 1;
       }
 
-      return resolve(likedImage)
+      return resolve(this.likes.find(like => like.id === likedImageId));
+    })
+  }
+
+  async removeLike(likedImageId: number): Promise<Like | undefined> {
+    return new Promise((resolve, reject) => {
+      if (!likedImageId) {
+        return reject('Invalid liked image id.');
+      }
+
+      const likedImageIndex = this.likes.findIndex(like => like.id === likedImageId);
+
+      if (likedImageIndex === -1) {
+        const newLikedImage: Like = {
+          id: likedImageId,
+          qtt: 0
+        };
+
+        this.likes.push(newLikedImage);
+
+        return resolve(newLikedImage);
+      }
+
+      if (this.likes[likedImageIndex].qtt > 0) {
+        this.likes[likedImageIndex].qtt -= 1;
+      }
+
+      return resolve(this.likes[likedImageIndex]);
     })
   }
 }
