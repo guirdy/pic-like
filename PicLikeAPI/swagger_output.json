@@ -11,7 +11,7 @@
     "http"
   ],
   "paths": {
-    "/user/profile/{id}": {
+    "/user/profile/{userId}": {
       "get": {
         "description": "",
         "parameters": [
@@ -39,7 +39,17 @@
         }
       }
     },
-    "/like/{id}": {
+    "/like/{userId}/all": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/like/{likeId}": {
       "get": {
         "description": "",
         "parameters": [

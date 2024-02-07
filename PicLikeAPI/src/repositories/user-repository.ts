@@ -18,31 +18,23 @@ export class UserRepository implements IUserRepository {
     }
   ];
 
-  async getUser(id: number): Promise<User | undefined> {
+  async getUser(userId: number): Promise<User | undefined> {
     return new Promise((resolve, reject) => {
-      if (!id) {
-        return reject(new Error('Invalid id.'))
-      }
+      return resolve(this.users.find(c => c.id === userId));
+    })
+  }
 
-      return resolve(this.users.find(c => c.id === id));
+  async getUserLikedImages(userId: number): Promise<Like[] | undefined> {
+    return new Promise((resolve, reject) => {
+      const user = this.users.find(c => c.id === userId)
+
+      return resolve(user?.likedImages)
     })
   }
 
   async addLikedImage(userId: number, likedImageId: number): Promise<Like | undefined> {
     return new Promise((resolve, reject) => {
-      if (!userId) {
-        return reject(new Error('Invalid user.'))
-      }
-
-      if (!likedImageId) {
-        return reject(new Error('Invalid liked image id.'))
-      }
-
       const currentUserIndex = this.users.findIndex(user => user.id === userId)
-
-      if (currentUserIndex === -1) {
-        return reject(new Error('User not found.'))
-      }
 
       const likedImageIndex = this.users[currentUserIndex]?.likedImages.findIndex(image => image.id === likedImageId)
 
@@ -60,14 +52,6 @@ export class UserRepository implements IUserRepository {
 
   async removeLikedImage(userId: number, likedImageId: number): Promise<Like[] | undefined> {
     return new Promise((resolve, reject) => {
-      if (!userId) {
-        return reject(new Error('Invalid user.'))
-      }
-
-      if (!likedImageId) {
-        return reject(new Error('Invalid liked image id.'))
-      }
-
       const currentUserIndex = this.users.findIndex(user => user.id === userId)
 
       if (currentUserIndex === -1) {

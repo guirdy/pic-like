@@ -28,11 +28,11 @@ export class LikeServices {
 
   async getUser({
     userId
-  }: UserRequest): Promise<UserResponse> {
+  }: UserRequest): Promise<UserResponse | null> {
     const user = await this.userRepository.getUser(userId);
 
     if (!user) {
-      throw new Error('User not found.')
+      return null
     }
 
     return {
@@ -40,11 +40,23 @@ export class LikeServices {
     }
   }
 
-  async getLikeById(likedImageId: number): Promise<Like> {
+  async getLikesByUserId(userId: number): Promise<Like[] | null> {
+    const user = await this.userRepository.getUser(userId);
+
+    if (!user) {
+      return null
+    }
+
+    const userLikedImages = await this.userRepository.getUserLikedImages(userId);
+
+    return userLikedImages || [];
+  }
+
+  async getLikeById(likedImageId: number): Promise<Like | null> {
     const like = await this.likeRepository.getLikedImageById(likedImageId);
 
     if (!like) {
-      throw new Error('Liked image not found.')
+      return null
     }
 
     return like;
@@ -59,11 +71,11 @@ export class LikeServices {
   async addLike({
     userId,
     likedImageId
-  }: LikeRequest): Promise<LikeResponse> {
+  }: LikeRequest): Promise<LikeResponse | null> {
     const user = await this.userRepository.getUser(userId);
 
     if (!user) {
-      throw new Error('User not found.')
+      return null
     }
 
     await this.likeRepository.addLike(likedImageId)
@@ -79,11 +91,11 @@ export class LikeServices {
   async removeLike({
     userId,
     likedImageId
-  }: LikeRequest): Promise<LikeResponse> {
+  }: LikeRequest): Promise<LikeResponse | null> {
     const user = await this.userRepository.getUser(userId);
 
     if (!user) {
-      throw new Error('User not found.')
+      return null
     }
 
     await this.likeRepository.removeLike(likedImageId)
