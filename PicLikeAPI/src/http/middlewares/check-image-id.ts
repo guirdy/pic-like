@@ -11,7 +11,9 @@ export async function checkImageId(req: Request, res: Response, next: NextFuncti
       return res.json()
     }).catch(e => {
       console.error(e)
-      res.status(404).send('Image id does not exist.')
+      res.status(404).json({
+        error: 'Image id does not exist.'
+      })
     })
 
   next()

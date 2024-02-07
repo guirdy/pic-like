@@ -30,7 +30,7 @@ async function getData() {
   const { token } = (await authResponse.json()) as AuthResponse
 
   const imagesLikedResponse = await fetch(
-    `${process.env.IMAGE_STORAGE_API}/v1/images`,
+    `${process.env.PICLIKE_API}/v1/images`,
     {
       method: 'GET',
       headers: {
