@@ -9,6 +9,12 @@ export class UserRepository implements IUserRepository {
       email: 'gui@gui.com',
       password: '123456',
       likedImages: []
+    },
+    {
+      id: 2,
+      email: 'teste@teste.com',
+      password: '123456',
+      likedImages: []
     }
   ];
 

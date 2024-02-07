@@ -1,24 +1,31 @@
 # PickLike API
 
-API do PickLike desenvolvida em Node.js, esta API permite adicionar likes nas imagens disponíveis no [Image Storage API](https://github.com/guirdy/pic-like/tree/master/ImageStorageAPI), fazendo conexão direta com a mesma para validar o ID das imagens curtidas.
+The PickLike API developed in Node.js allows users to add likes to images available on the [Image Storage API](https://github.com/guirdy/pic-like/tree/master/ImageStorageAPI), establishing a direct connection to validate the IDs of liked images.
 
-Para executar esta API, é necessário antes rodar a [Image Storage API](https://github.com/guirdy/pic-like/tree/master/ImageStorageAPI), após isso, siga os passos abaixo:
+To run this API, you need to first run the [Image Storage API](https://github.com/guirdy/pic-like/tree/master/ImageStorageAPI). After that, follow the steps below:
 
-Instale as dependências
+Install dependencies
 ```bash
 npm i
 ```
 
-Execute o projeto
+Run the project
 ```bash
 npm run dev
 ```
 
-Acesse o [Swagger Docs](http://localhost:3333/doc) para ter uma visão geral dos endpoints.
+Access the [Swagger Docs](http://localhost:3333/doc) for an overview of the endpoints.
 
-Para rodar os testes
+To run tests
+
 ```bash
 npm run test
 ```
 
-Próximos passos com [Front-End](https://github.com/guirdy/pic-like/tree/master/PickLikeFront).
+or
+
+```bash
+npm run test:watch
+```
+
+Next steps with the [Front-End](https://github.com/guirdy/pic-like/tree/master/piclike-front).
