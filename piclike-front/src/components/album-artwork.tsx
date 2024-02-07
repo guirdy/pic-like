@@ -27,8 +27,8 @@ export function AlbumArtwork({
   ...props
 }: AlbumArtworkProps) {
   return (
-    <div className={cn('space-y-3', className)} {...props}>
-      <Dialog>
+    <Dialog>
+      <div className={cn('space-y-3', className)} {...props}>
         <DialogTrigger>
           <div className="overflow-hidden rounded-md">
             <Image
@@ -36,6 +36,7 @@ export function AlbumArtwork({
               alt={image.title}
               width={width}
               height={height}
+              quality={100}
               className={cn(
                 'h-auto w-auto object-cover transition-all hover:scale-105',
                 aspectRatio === 'portrait' ? 'aspect-[3/4]' : 'aspect-square',
@@ -52,24 +53,24 @@ export function AlbumArtwork({
             <AiFillLike />
           </button>
         </div>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="text-center mb-6">
-              {image.title}
-            </DialogTitle>
-            <DialogDescription>
-              <div className="flex items-center justify-center">
-                <Image
-                  src={image.url}
-                  alt={image.title}
-                  width={500}
-                  height={660}
-                />
-              </div>
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
-    </div>
+      </div>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className="text-center mb-6">
+            <p>{image.title}</p>
+          </DialogTitle>
+          <DialogDescription>
+            <div className="flex items-center justify-center">
+              <Image
+                src={image.url}
+                alt={image.title}
+                width={500}
+                height={660}
+              />
+            </div>
+          </DialogDescription>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
   )
 }

@@ -10,7 +10,7 @@ export async function checkImageId(req: Request, res: Response, next: NextFuncti
     .then(res => {
       return res.json()
     }).catch(e => {
-      console.log(e)
+      console.error(e)
       res.status(404).send('Image id does not exist.')
     })
 

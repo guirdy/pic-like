@@ -1,10 +1,10 @@
 import { AlbumArtwork } from '@/components/album-artwork'
 import { Separator } from '@/components/ui/separator'
-import { listenNowAlbums } from '@/data/albums'
 import { Metadata } from 'next'
 import { Suspense } from 'react'
 import Loading from './loading'
 import { IImage } from '@/types/image-storage'
+import { AuthResponse } from '@/types/auth'
 
 export const metadata: Metadata = {
   title: 'Liked | PicLike',
@@ -12,23 +12,46 @@ export const metadata: Metadata = {
 }
 
 async function getData() {
-  const res = await fetch(`${process.env.IMAGE_STORAGE_API}/v1/images`, {
-    method: 'GET',
-  })
-
-  if (!res.ok) {
-    throw new Error('Failed to fetch data')
+  const user = {
+    id: 1,
+    email: 'gui@gui.com',
+    password: '123456',
   }
 
-  const images = (await res.json()) as IImage[]
+  const authResponse = await fetch(`${process.env.NEXTAUTH_URL}/api/auth`, {
+    method: 'POST',
+    body: JSON.stringify(user),
+  })
+
+  if (!authResponse.ok) {
+    throw new Error('Failed to authenticate')
+  }
+
+  const { token } = (await authResponse.json()) as AuthResponse
+
+  const imagesLikedResponse = await fetch(
+    `${process.env.IMAGE_STORAGE_API}/v1/images`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  )
+
+  if (!imagesLikedResponse.ok) {
+    throw new Error('Failed to fetch images')
+  }
+
+  const imagesLiked = (await imagesLikedResponse.json()) as IImage[]
 
   return {
-    images,
+    imagesLiked,
   }
 }
 
 export default async function LikedPage() {
-  const { images } = await getData()
+  const { imagesLiked } = await getData()
 
   return (
     <Suspense fallback={<Loading />}>
@@ -47,7 +70,7 @@ export default async function LikedPage() {
         <Separator className="my-4" />
 
         <div className="flex w-full flex-wrap gap-4 pb-12">
-          {images.map((image) => (
+          {imagesLiked.map((image) => (
             <AlbumArtwork
               key={image.title}
               image={image}

@@ -5,6 +5,7 @@ import { Separator } from '@/components/ui/separator'
 import { Suspense } from 'react'
 import Loading from './loading'
 import { IImage } from '@/types/image-storage'
+import { AuthResponse } from '@/types/auth'
 
 export const metadata: Metadata = {
   title: 'Home | PicLike',
@@ -12,15 +13,38 @@ export const metadata: Metadata = {
 }
 
 async function getData() {
-  const res = await fetch(`${process.env.IMAGE_STORAGE_API}/v1/images`, {
-    method: 'GET',
-  })
-
-  if (!res.ok) {
-    throw new Error('Failed to fetch data')
+  const user = {
+    id: 1,
+    email: 'gui@gui.com',
+    password: '123456',
   }
 
-  const images = (await res.json()) as IImage[]
+  const authResponse = await fetch(`${process.env.NEXTAUTH_URL}/api/auth`, {
+    method: 'POST',
+    body: JSON.stringify(user),
+  })
+
+  if (!authResponse.ok) {
+    throw new Error('Failed to authenticate')
+  }
+
+  const { token } = (await authResponse.json()) as AuthResponse
+
+  const imagesResponse = await fetch(
+    `${process.env.IMAGE_STORAGE_API}/v1/images`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  )
+
+  if (!imagesResponse.ok) {
+    throw new Error('Failed to fetch images')
+  }
+
+  const images = (await imagesResponse.json()) as IImage[]
 
   return {
     images,
