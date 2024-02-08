@@ -1,9 +1,11 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import './globals.css'
 import { Sidebar } from '@/components/sidebar'
 import { ThemeProvider } from '@/components/next-theme'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
+
+import './globals.css'
+import { MenuMobile } from '@/components/ui/menu-mobile'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -33,7 +35,10 @@ export default function RootLayout({
                   <h2 className="md:text-2xl text-lg font-semibold tracking-tight">
                     PicLike
                   </h2>
-                  <ThemeToggle />
+                  <div className="flex items-center gap-2">
+                    <ThemeToggle />
+                    <MenuMobile />
+                  </div>
                 </header>
                 <div className="flex h-[calc(100vh-53px)]">
                   <Sidebar className="h-screen border-r xl:block hidden" />

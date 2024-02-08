@@ -1,11 +1,17 @@
 import { Metadata } from 'next'
+import { Suspense } from 'react'
 import { AlbumArtwork } from '../components/album-artwork'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import { Suspense } from 'react'
 import Loading from './loading'
-import { IImage } from '@/types/image-storage'
-import { AuthResponse } from '@/types/auth'
+import { authService } from './services/auth-service'
+import { getImagesStorageService } from './services/images-storage'
+import { user } from '@/data/user'
+
+import {
+  getAllImagesLikedService,
+  getUserImagesLikedService,
+} from './services/images-liked'
 
 export const metadata: Metadata = {
   title: 'Home | PicLike',
@@ -13,49 +19,33 @@ export const metadata: Metadata = {
 }
 
 async function getData() {
-  const user = {
-    id: 1,
-    email: 'gui@gui.com',
-    password: '123456',
-  }
+  const { token } = await authService(user)
 
-  const authResponse = await fetch(`${process.env.NEXTAUTH_URL}/api/auth`, {
-    method: 'POST',
-    body: JSON.stringify(user),
+  const { images } = await getImagesStorageService(token)
+  const { imagesLike } = await getAllImagesLikedService(token)
+  const { userImagesLiked } = await getUserImagesLikedService(user.id, token)
+
+  const imagesLikeMap: Record<number, number> = {}
+  imagesLike.forEach((like) => {
+    imagesLikeMap[like.id] = like.qtt
   })
 
-  if (!authResponse.ok) {
-    throw new Error('Failed to authenticate')
-  }
-
-  const { token } = (await authResponse.json()) as AuthResponse
-
-  const imagesResponse = await fetch(
-    `${process.env.IMAGE_STORAGE_API}/v1/images`,
-    {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  )
-
-  if (!imagesResponse.ok) {
-    throw new Error('Failed to fetch images')
-  }
-
-  const images = (await imagesResponse.json()) as IImage[]
+  const imagesWithLikes = images.map((image) => ({
+    ...image,
+    qtt: imagesLikeMap[image.id] || 0,
+  }))
 
   return {
-    images,
+    userImagesLiked,
+    imagesWithLikes,
   }
 }
 
 export default async function HomePage() {
-  const { images } = await getData()
+  const { userImagesLiked, imagesWithLikes } = await getData()
 
-  const recentPictures = images.slice(0, 4)
-  const oldPictures = images.slice(4)
+  const recentPictures = imagesWithLikes.slice(0, 4)
+  const oldPictures = imagesWithLikes.slice(4)
 
   return (
     <Suspense fallback={<Loading />}>
@@ -80,6 +70,11 @@ export default async function HomePage() {
                   image={image}
                   className="w-[250px]"
                   aspectRatio="portrait"
+                  hasBeenLiked={
+                    !!userImagesLiked.find(
+                      (userImage) => userImage.id === image.id,
+                    )
+                  }
                   width={250}
                   height={330}
                 />
@@ -107,6 +102,11 @@ export default async function HomePage() {
                   image={image}
                   className="w-[150px]"
                   aspectRatio="square"
+                  hasBeenLiked={
+                    !!userImagesLiked.find(
+                      (userImage) => userImage.id === image.id,
+                    )
+                  }
                   width={150}
                   height={150}
                 />

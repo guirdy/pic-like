@@ -19,19 +19,19 @@ describe('Likes Services', () => {
 
     expect(likedImages).toHaveLength(2)
 
-    const { user } = await picLikeServices.getUser({ userId: 1 })
-    expect(user.likedImages).toHaveLength(2)
+    const userRes = await picLikeServices.getUser({ userId: 1 })
+    expect(userRes?.user.likedImages).toHaveLength(2)
   })
 
   it('should to add a like to an image', async () => {
     await picLikeServices.addLike({ userId: 1, likedImageId: 1 })
     const likedImage = await picLikeServices.getLikeById(1)
 
-    expect(likedImage.id).toEqual(1)
-    expect(likedImage.qtt).toEqual(1)
+    expect(likedImage?.id).toEqual(1)
+    expect(likedImage?.qtt).toEqual(1)
 
     await picLikeServices.addLike({ userId: 1, likedImageId: 1 })
-    expect(likedImage.qtt).toEqual(2)
+    expect(likedImage?.qtt).toEqual(2)
   })
 
   it('should to remove the image like', async () => {
@@ -40,19 +40,19 @@ describe('Likes Services', () => {
 
     const likedImage = await picLikeServices.getLikeById(1)
 
-    expect(likedImage.qtt).toEqual(2)
+    expect(likedImage?.qtt).toEqual(2)
 
     await picLikeServices.removeLike({ userId: 1, likedImageId: 1 })
-    expect(likedImage.qtt).toEqual(1)
+    expect(likedImage?.qtt).toEqual(1)
 
     await picLikeServices.removeLike({ userId: 1, likedImageId: 1 })
-    expect(likedImage.qtt).toEqual(0)
+    expect(likedImage?.qtt).toEqual(0)
   })
 
-  it('should to get error when i search for an invalid id', async () => {
-    await expect(async () => {
+  it('should to get null when i search for an invalid id', async () => {
       await picLikeServices.addLike({ userId: 1, likedImageId: 1 })
-      await picLikeServices.getLikeById(2)
-    }).rejects.toThrowError(new Error('Liked image not found.'));
+      const like = await picLikeServices.getLikeById(2)
+
+      expect(like).toBeNull()
   })
 })

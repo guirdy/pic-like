@@ -22,7 +22,6 @@ export default function Loading() {
         <AlbumArtworkSkeleton variant="large" />
         <AlbumArtworkSkeleton variant="large" />
         <AlbumArtworkSkeleton variant="large" />
-        <AlbumArtworkSkeleton variant="large" />
       </div>
     </div>
   )

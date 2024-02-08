@@ -1,7 +1,19 @@
+'use client'
+
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
-import { IImage } from '@/types/image-storage'
+import { CompleteImageType } from '@/types/image-storage'
 import { AiFillLike } from 'react-icons/ai'
+import { Button } from './ui/button'
+import { user } from '@/data/user'
+import { authService } from '@/app/services/auth-service'
+import { useState } from 'react'
+
+import {
+  addLikeToAnImageService,
+  removeLikeToAnImageService,
+} from '@/app/services/images-liked'
+
 import {
   Dialog,
   DialogContent,
@@ -10,10 +22,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from './ui/dialog'
+import { useRouter } from 'next/navigation'
 
 interface AlbumArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
-  image: IImage
+  image: CompleteImageType
   aspectRatio?: 'portrait' | 'square'
+  hasBeenLiked: boolean
   width: number
   height: number
 }
@@ -23,9 +37,33 @@ export function AlbumArtwork({
   aspectRatio = 'portrait',
   width,
   height,
+  hasBeenLiked,
   className,
   ...props
 }: AlbumArtworkProps) {
+  const router = useRouter()
+  const [isFetching, setIsFetching] = useState<boolean>(false)
+
+  async function handleClickOnLike() {
+    setIsFetching(() => true)
+
+    const { token } = await authService(user)
+    await addLikeToAnImageService(user.id, image.id, token)
+
+    setIsFetching(() => false)
+    router.refresh()
+  }
+
+  async function handleClickOnUnlike() {
+    setIsFetching(() => true)
+
+    const { token } = await authService(user)
+    await removeLikeToAnImageService(user.id, image.id, token)
+
+    setIsFetching(() => false)
+    router.refresh()
+  }
+
   return (
     <Dialog>
       <div className={cn('space-y-3', className)} {...props}>
@@ -47,11 +85,27 @@ export function AlbumArtwork({
         <div className="flex justify-between gap-2 text-sm">
           <div className="space-y-1">
             <h3 className="font-medium leading-none">{image.title}</h3>
-            <p className="text-xs text-muted-foreground">Likes: 789</p>
+            <p className="text-xs text-muted-foreground">Likes: {image.qtt}</p>
           </div>
-          <button className="max-w-8 border rounded-md p-2">
-            <AiFillLike />
-          </button>
+          {hasBeenLiked ? (
+            <Button
+              className="max-w-8 border rounded-md p-2"
+              variant="default"
+              onClick={handleClickOnUnlike}
+              disabled={isFetching}
+            >
+              <AiFillLike />
+            </Button>
+          ) : (
+            <Button
+              className="max-w-8 border rounded-md p-2"
+              variant="ghost"
+              onClick={handleClickOnLike}
+              disabled={isFetching}
+            >
+              <AiFillLike />
+            </Button>
+          )}
         </div>
       </div>
       <DialogContent>
@@ -66,6 +120,7 @@ export function AlbumArtwork({
                 alt={image.title}
                 width={500}
                 height={660}
+                quality={50}
               />
             </div>
           </DialogDescription>

@@ -5,15 +5,28 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { RiPhoneFindLine } from 'react-icons/ri'
 import { AiOutlineLike } from 'react-icons/ai'
+import { DialogCloseProps } from '@radix-ui/react-dialog'
 
-interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
+  DrawerClose?: React.ForwardRefExoticComponent<
+    DialogCloseProps & React.RefAttributes<HTMLButtonElement>
+  >
+}
 
-export function Sidebar({ className }: SidebarProps) {
+export function Sidebar({ className, DrawerClose }: SidebarProps) {
   const router = useRouter()
   const pathname = usePathname()
 
   const isOnHomePage = pathname === '/'
   const isOnLikedPage = pathname === '/liked'
+
+  function handleClickHome() {
+    router.push('/')
+  }
+
+  function handleClickLiked() {
+    router.push('/liked')
+  }
 
   return (
     <div className={cn('pb-12', className)}>
@@ -23,31 +36,36 @@ export function Sidebar({ className }: SidebarProps) {
             <Button
               variant={isOnHomePage ? 'secondary' : 'ghost'}
               className="w-full justify-start"
-              onClick={() => router.push('/')}
+              onClick={handleClickHome}
             >
-              {/* <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="mr-2 h-4 w-4"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <polygon points="10 8 16 12 10 16 10 8" />
-              </svg> */}
-              <RiPhoneFindLine className="mr-2" />
-              Discover
+              {DrawerClose ? (
+                <DrawerClose className="flex items-center w-full">
+                  <RiPhoneFindLine className="mr-2" />
+                  Discover
+                </DrawerClose>
+              ) : (
+                <>
+                  <RiPhoneFindLine className="mr-2" />
+                  Discover
+                </>
+              )}
             </Button>
             <Button
               variant={isOnLikedPage ? 'secondary' : 'ghost'}
               className="w-full justify-start"
-              onClick={() => router.push('/liked')}
+              onClick={handleClickLiked}
             >
-              <AiOutlineLike className="mr-2" />
-              Liked
+              {DrawerClose ? (
+                <DrawerClose className="flex items-center w-full">
+                  <AiOutlineLike className="mr-2" />
+                  Liked
+                </DrawerClose>
+              ) : (
+                <>
+                  <AiOutlineLike className="mr-2" />
+                  Liked
+                </>
+              )}
             </Button>
           </div>
         </div>

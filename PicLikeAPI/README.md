@@ -29,3 +29,5 @@ npm run test:watch
 ```
 
 Next steps with the [Front-End](https://github.com/guirdy/pic-like/tree/master/piclike-front).
+
+<h4 align=center>Developed by <a href="https://www.linkedin.com/in/guirdy/">Guilherme Leandro</a> 💻</h4>

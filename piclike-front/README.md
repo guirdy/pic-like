@@ -26,3 +26,5 @@ npm run dev
 ```
 
 Access the application on [localhost:3000](http://localhost:3000).
+
+<h4 align=center>Developed by <a href="https://www.linkedin.com/in/guirdy/">Guilherme Leandro</a> 💻</h4>

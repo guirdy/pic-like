@@ -3,8 +3,11 @@ import { Separator } from '@/components/ui/separator'
 import { Metadata } from 'next'
 import { Suspense } from 'react'
 import Loading from './loading'
-import { IImage } from '@/types/image-storage'
-import { AuthResponse } from '@/types/auth'
+import { authService } from '../services/auth-service'
+import { getImagesStorageService } from '../services/images-storage'
+import { getUserImagesLikedService } from '../services/images-liked'
+import { CompleteImageType } from '@/types/image-storage'
+import { user } from '@/data/user'
 
 export const metadata: Metadata = {
   title: 'Liked | PicLike',
@@ -12,46 +15,32 @@ export const metadata: Metadata = {
 }
 
 async function getData() {
-  const user = {
-    id: 1,
-    email: 'gui@gui.com',
-    password: '123456',
-  }
+  const { token } = await authService(user)
 
-  const authResponse = await fetch(`${process.env.NEXTAUTH_URL}/api/auth`, {
-    method: 'POST',
-    body: JSON.stringify(user),
+  const { images } = await getImagesStorageService(token)
+
+  const { userImagesLiked } = await getUserImagesLikedService(user.id, token)
+
+  const imagesWithLikes = userImagesLiked.map((likedImage) => {
+    const originalImage = images.find((image) => image.id === likedImage.id)
+    const title = originalImage?.title || 'No title'
+    const url =
+      originalImage?.url || 'https://placehold.co/456x684?text=Hello+World'
+
+    return {
+      ...likedImage,
+      title,
+      url,
+    }
   })
 
-  if (!authResponse.ok) {
-    throw new Error('Failed to authenticate')
-  }
-
-  const { token } = (await authResponse.json()) as AuthResponse
-
-  const imagesLikedResponse = await fetch(
-    `${process.env.PICLIKE_API}/v1/images`,
-    {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  )
-
-  if (!imagesLikedResponse.ok) {
-    throw new Error('Failed to fetch images')
-  }
-
-  const imagesLiked = (await imagesLikedResponse.json()) as IImage[]
-
   return {
-    imagesLiked,
+    imagesWithLikes,
   }
 }
 
 export default async function LikedPage() {
-  const { imagesLiked } = await getData()
+  const { imagesWithLikes } = await getData()
 
   return (
     <Suspense fallback={<Loading />}>
@@ -70,16 +59,23 @@ export default async function LikedPage() {
         <Separator className="my-4" />
 
         <div className="flex w-full flex-wrap gap-4 pb-12">
-          {imagesLiked.map((image) => (
-            <AlbumArtwork
-              key={image.title}
-              image={image}
-              className="w-[250px]"
-              aspectRatio="portrait"
-              width={250}
-              height={330}
-            />
-          ))}
+          {imagesWithLikes.length ? (
+            <>
+              {imagesWithLikes.map((image: CompleteImageType) => (
+                <AlbumArtwork
+                  key={image.title}
+                  image={image}
+                  className="w-[250px]"
+                  aspectRatio="portrait"
+                  hasBeenLiked
+                  width={250}
+                  height={330}
+                />
+              ))}
+            </>
+          ) : (
+            <span>You don&#39;t have liked images yet :&#40;</span>
+          )}
         </div>
       </div>
     </Suspense>
