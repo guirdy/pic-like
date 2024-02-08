@@ -13,12 +13,7 @@ Add a `.env` file on the root with the variables below:
 * PICLIKE_API="http://localhost:3333"
 * IMAGE_STORAGE_API="http://localhost:7032"
 * NEXTAUTH_URL="http://localhost:3000"
-* NEXTAUTH_SECRET=
-
-You can generate a `NEXTAUTH_SECRET` using the command below and paste it into the environment variable:
-```bash
-openssl rand -base64 32
-```
+* NEXTAUTH_SECRET="VhOEZGvDEOWnaAjK8pi4+70fBQ7/QdL19YqCnx85WzA="
 
 Run the project
 ```bash

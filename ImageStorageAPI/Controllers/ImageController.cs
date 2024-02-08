@@ -1,5 +1,6 @@
 ﻿using ImageStorageAPI.Models;
 using ImageStorageAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImageStorageAPI.Controllers
@@ -17,6 +18,7 @@ namespace ImageStorageAPI.Controllers
 
         [HttpGet("images")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize]
         public IActionResult GetAll()
         {
             List<Image> images = _services.GetAllImages();

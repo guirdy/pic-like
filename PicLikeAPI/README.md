@@ -9,6 +9,9 @@ Install dependencies
 npm i
 ```
 
+Create a `.env` file on the project root with the variable below:
+* JWT_SECRET="VhOEZGvDEOWnaAjK8pi4+70fBQ7/QdL19YqCnx85WzA="
+
 Run the project
 ```bash
 npm run dev
