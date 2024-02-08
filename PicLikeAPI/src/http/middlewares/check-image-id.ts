@@ -3,7 +3,6 @@ import { env } from "src/env";
 
 export async function checkImageId(req: Request, res: Response, next: NextFunction) {
   const imageId = req.params.likeId;
-  console.log(imageId)
 
   await fetch(`${env.STORAGE_API}/v1/image/${imageId}`, {
     method: 'GET',
