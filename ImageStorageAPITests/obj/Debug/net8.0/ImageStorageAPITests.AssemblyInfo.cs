@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ImageStorageAPITests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d884f17ca56a2ad37270862d513d872daacf929b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ca2ffe3bb69b288e01e6e2becba782b546afede7")]
 [assembly: System.Reflection.AssemblyProductAttribute("ImageStorageAPITests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ImageStorageAPITests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

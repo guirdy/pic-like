@@ -4,10 +4,12 @@ export async function getAllImagesLikedService(token: string) {
   const imagesLikedResponse = await fetch(
     `${process.env.PICLIKE_API}/like/all`,
     {
-      cache: 'no-cache',
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
+      },
+      next: {
+        tags: ['all-liked-images'],
       },
     },
   )
@@ -27,10 +29,12 @@ export async function getUserImagesLikedService(userId: number, token: string) {
   const imagesLikedResponse = await fetch(
     `${process.env.PICLIKE_API}/like/${userId}/all`,
     {
-      cache: 'no-cache',
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
+      },
+      next: {
+        tags: ['all-user-liked-images'],
       },
     },
   )
@@ -54,7 +58,6 @@ export async function addLikeToAnImageService(
   const imagesLikedResponse = await fetch(
     `${process.env.PICLIKE_API}/like/add/${userId}/${imageId}`,
     {
-      cache: 'no-cache',
       method: 'PUT',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -81,7 +84,6 @@ export async function removeLikeToAnImageService(
   const imagesLikedResponse = await fetch(
     `${process.env.PICLIKE_API}/like/remove/${userId}/${imageId}`,
     {
-      cache: 'no-cache',
       method: 'PUT',
       headers: {
         Authorization: `Bearer ${token}`,

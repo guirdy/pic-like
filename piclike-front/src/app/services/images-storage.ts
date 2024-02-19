@@ -8,6 +8,9 @@ export async function getImagesStorageService(token: string) {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      next: {
+        tags: ['images-storage'],
+      },
     },
   )
 

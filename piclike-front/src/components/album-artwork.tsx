@@ -8,6 +8,7 @@ import { Button } from './ui/button'
 import { user } from '@/data/user'
 import { authService } from '@/app/services/auth-service'
 import { useState } from 'react'
+import { like, unlike } from '@/app/actions'
 
 import {
   addLikeToAnImageService,
@@ -22,7 +23,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from './ui/dialog'
-import { useRouter } from 'next/navigation'
 
 interface AlbumArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
   image: CompleteImageType
@@ -41,27 +41,22 @@ export function AlbumArtwork({
   className,
   ...props
 }: AlbumArtworkProps) {
-  const router = useRouter()
   const [isFetching, setIsFetching] = useState<boolean>(false)
 
   async function handleClickOnLike() {
     setIsFetching(() => true)
 
-    const { token } = await authService(user)
-    await addLikeToAnImageService(user.id, image.id, token)
+    await like(image.id)
 
     setIsFetching(() => false)
-    router.refresh()
   }
 
   async function handleClickOnUnlike() {
     setIsFetching(() => true)
 
-    const { token } = await authService(user)
-    await removeLikeToAnImageService(user.id, image.id, token)
+    await unlike(image.id)
 
     setIsFetching(() => false)
-    router.refresh()
   }
 
   return (
